@@ -1,5 +1,6 @@
 package com.example.android.quakereport;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -10,30 +11,40 @@ import java.util.Locale;
 
 public class Earthquake {
 
-    private String magnitude = "";
+    private Double magnitude;
     private String location = "";
-    private String date = "";
+    private Date wholetime; //Store full date and time not formatted
+    private String offSet= "";
+    private String primaryLocation = "";
 
-    public Earthquake(String mag, String place, String time){
+
+    public Earthquake(Double mag, String place, String time){
         magnitude = mag;
         location = place;
-        date = time;
+
+        wholetime = new java.util.Date(Long.valueOf(time)); //Store full date and time not formatted
+        //date = new SimpleDateFormat("dd MMM, yyyy HH:mm").format(df);
     }
 
 
-    public String getMagnitude(){
+    public Double getMagnitude(){
         return magnitude;
+    }
+
+    public String getDate(){
+        return new SimpleDateFormat("dd MMM, yyyy").format(wholetime);
+    }
+
+    public String getTime(){
+        return new SimpleDateFormat("HH:mm").format(wholetime);
     }
 
     public String getLocation(){
         return location;
     }
 
-    public String getDate(){
-        long dv = Long.valueOf(date);
-        Date df = new java.util.Date(dv);
-        date = new SimpleDateFormat("dd MMM, yyyy HH:mm").format(df);
-        return date;
-    }
+
 
 }
+
+

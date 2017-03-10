@@ -9,34 +9,72 @@
         android:layout_width="match_parent"
         android:layout_height="44dp"
         android:orientation="horizontal"
-        android:paddingLeft="16dp">
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
 
 
         <TextView
             android:id="@+id/magnitude_text"
             android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_weight="0.8"
             android:layout_height="match_parent"
             tools:text="5.1"
-            android:gravity="center_vertical" />
+            android:gravity="center" />
 
-        <TextView
-            android:id="@+id/location_text"
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="4"
-            android:layout_height="match_parent"
-            tools:text="New york"
-            android:gravity="center_vertical"
-            />
+            android:layout_weight="3"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical"
+            android:paddingLeft="8dp">
 
-        <TextView
-            android:id="@+id/date_text"
+            <TextView
+                android:id="@+id/offset_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:text="23km NW of"
+                android:gravity="center_vertical"
+                android:paddingLeft="4dp"
+                android:textStyle="italic"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/location_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:text="New York, United states"
+                android:gravity="center_vertical"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="2"
-            android:layout_height="match_parent"
-            tools:text="23 feb 2017"
-            android:gravity="center_vertical"
-            android:paddingLeft="16dp"/>
+            android:layout_weight="1.8"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical"
+            android:paddingLeft="16dp"
+            >
+
+
+            <TextView
+                android:id="@+id/date_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:text="23 feb 2017"
+                android:gravity="center_vertical"
+                android:textSize="12dp"/>
+
+            <TextView
+                android:id="@+id/time_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:text="17:23"
+                android:gravity="center_vertical"
+                android:textSize="12dp" />
+        </LinearLayout>
 
     </LinearLayout>
 

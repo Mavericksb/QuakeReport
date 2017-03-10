@@ -15,4 +15,7 @@
 -->
 <resources>
     <string name="app_name">Quake Report</string>
+
+    //default string to use as a OffSet for the location
+    <string name="near_of">Near of</string>
 </resources>
