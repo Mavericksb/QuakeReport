@@ -25,7 +25,7 @@ public class EarthquakeAdapter extends ArrayAdapter<Earthquake>{
     private String primaryLocation = "";
     private String offSet = "";
     private static final String LOCATION_SEPARATOR = "of";
-    
+
 
     public EarthquakeAdapter(Context context, int resource, ArrayList earthquakes) {
         super(context, 0, earthquakes);

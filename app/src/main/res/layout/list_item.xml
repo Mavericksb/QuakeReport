@@ -7,19 +7,21 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="44dp"
+        android:layout_height="64dp"
         android:orientation="horizontal"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp">
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
 
 
         <TextView
             android:id="@+id/magnitude_text"
-            android:layout_width="0dp"
-            android:layout_weight="0.8"
+            android:layout_width="48dp"
             android:layout_height="match_parent"
             tools:text="5.1"
-            android:gravity="center" />
+            android:gravity="center"
+            android:background="@drawable/magnitude_circle"/>
 
         <LinearLayout
             android:layout_width="0dp"
@@ -27,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:orientation="vertical"
-            android:paddingLeft="8dp">
+            android:paddingLeft="16dp">
 
             <TextView
                 android:id="@+id/offset_text"
@@ -45,7 +47,8 @@
                 android:layout_height="match_parent"
                 tools:text="New York, United states"
                 android:gravity="center_vertical"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:textSize="15sp"/>
 
         </LinearLayout>
 
