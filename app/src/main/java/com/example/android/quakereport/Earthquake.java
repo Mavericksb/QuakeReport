@@ -14,16 +14,16 @@ public class Earthquake {
     private Double magnitude;
     private String location = "";
     private Date wholetime; //Store full date and time not formatted
-    private String offSet= "";
-    private String primaryLocation = "";
+    private String earthQuakeUrl = "";
 
 
-    public Earthquake(Double mag, String place, String time){
+    public Earthquake(Double mag, String place, String time, String url){
         magnitude = mag;
         location = place;
 
         wholetime = new java.util.Date(Long.valueOf(time)); //Store full date and time not formatted
         //date = new SimpleDateFormat("dd MMM, yyyy HH:mm").format(df);
+        earthQuakeUrl = url;
     }
 
 
@@ -41,6 +41,10 @@ public class Earthquake {
 
     public String getLocation(){
         return location;
+    }
+
+    public String getUrl(){
+        return earthQuakeUrl;
     }
 
 
