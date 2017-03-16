@@ -17,6 +17,7 @@ package com.example.android.quakereport;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -24,6 +25,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class EarthquakeActivity extends AppCompatActivity {
 
@@ -34,8 +36,12 @@ public class EarthquakeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.earthquake_activity);
 
-        // Create a fake list of earthquake locations.
-        ArrayList<Earthquake> earthquakes = QueryUtils.extractEarthquakes();
+        //Start an AsynTask to collect earthquake events to put in an ArrayList.
+        EarthquakeTask task = new EarthquakeTask();
+        task.execute("https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventtype=earthquake&orderby=time&minmag=6&limit=10");
+
+        // ?
+
 
 
         // Find a reference to the {@link ListView} in the layout
@@ -63,5 +69,17 @@ public class EarthquakeActivity extends AppCompatActivity {
         // Set the adapter on the {@link ListView}
         // so the list can be populated in the user interface
         earthquakeListView.setAdapter(adapter);
+    }
+
+    public class EarthquakeTask extends AsyncTask<String, Void, List<Earthquake>>{
+        @Override
+        protected List<Earthquake> doInBackground(String... urls) {
+            if (urls.length < 1 || urls[0] == null) {
+                return null;
+            }
+
+            ArrayList<Earthquake> earthquakes = QueryUtils.extractEarthquakes(urls[0]);
+            return earthquakes;
+        }
     }
 }
