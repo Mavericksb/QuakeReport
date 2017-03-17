@@ -17,6 +17,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Helper methods related to requesting and receiving earthquake data from USGS.
@@ -42,7 +43,7 @@ public final class QueryUtils {
      * Return a list of {@link Earthquake} objects that has been built up from
      * parsing a JSON response.
      */
-    public static ArrayList<Earthquake> extractEarthquakes(String StringUrl) {
+    public static List<Earthquake> extractEarthquakes(String StringUrl) {
 
         URL url = createUrl(StringUrl);
 
@@ -53,9 +54,9 @@ public final class QueryUtils {
             Log.e(LOG_TAG, "Error closing input stream ", e);
         }
         // Create an empty ArrayList that we can start adding earthquakes to
-        ArrayList<Earthquake> earthquakes = extractFromJson(jsonResponse);
+        List<Earthquake> earthquakes = extractFromJson(jsonResponse);
 
-        return null;
+        return earthquakes;
     }
 
     private static URL createUrl(String StringUrl) {
@@ -120,13 +121,13 @@ public final class QueryUtils {
         return output.toString();
     }
 
-    private static ArrayList<Earthquake> extractFromJson(String earthquakeJSON) {
+    private static List<Earthquake> extractFromJson(String earthquakeJSON) {
 
         if (TextUtils.isEmpty(earthquakeJSON)) {
             return null;
         }
 
-        ArrayList<Earthquake> earthquakes = new ArrayList<Earthquake>();
+        List<Earthquake> earthquakes = new ArrayList<Earthquake>();
         // Try to parse the SAMPLE_JSON_RESPONSE. If there's a problem with the way the JSON
         // is formatted, a JSONException exception object will be thrown.
         // Catch the exception so the app doesn't crash, and print the error message to the logs.

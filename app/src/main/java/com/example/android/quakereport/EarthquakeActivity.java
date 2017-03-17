@@ -20,6 +20,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -30,6 +31,8 @@ import java.util.List;
 public class EarthquakeActivity extends AppCompatActivity {
 
     public static final String LOG_TAG = EarthquakeActivity.class.getName();
+    private EarthquakeAdapter mAdapter;
+    private String earthquakeUrl = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventtype=earthquake&orderby=time&minmag=5&limit=20";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,18 +41,17 @@ public class EarthquakeActivity extends AppCompatActivity {
 
         //Start an AsynTask to collect earthquake events to put in an ArrayList.
         EarthquakeTask task = new EarthquakeTask();
-        task.execute("https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventtype=earthquake&orderby=time&minmag=6&limit=10");
-
-        // ?
-
-
+        task.execute(earthquakeUrl);
 
         // Find a reference to the {@link ListView} in the layout
         ListView earthquakeListView = (ListView) findViewById(R.id.list);
 
         // Create a new {@link ArrayAdapter} of earthquakes
-        EarthquakeAdapter adapter = new EarthquakeAdapter(
-                EarthquakeActivity.this, 0, earthquakes);
+        mAdapter = new EarthquakeAdapter(this, 0, new ArrayList<Earthquake>());
+
+        // Set the adapter on the {@link ListView}
+        // so the list can be populated in the user interface
+        earthquakeListView.setAdapter(mAdapter);
 
         //On Item click to open Browser and navigate to earthquake Url for details on USGS website.
         earthquakeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -66,9 +68,6 @@ public class EarthquakeActivity extends AppCompatActivity {
             }
         });
 
-        // Set the adapter on the {@link ListView}
-        // so the list can be populated in the user interface
-        earthquakeListView.setAdapter(adapter);
     }
 
     public class EarthquakeTask extends AsyncTask<String, Void, List<Earthquake>>{
@@ -78,8 +77,23 @@ public class EarthquakeActivity extends AppCompatActivity {
                 return null;
             }
 
-            ArrayList<Earthquake> earthquakes = QueryUtils.extractEarthquakes(urls[0]);
+            List<Earthquake> earthquakes = QueryUtils.extractEarthquakes(urls[0]);
             return earthquakes;
         }
-    }
+
+        @Override
+        protected void onPostExecute(List<Earthquake> earthquakes) {
+                // Clear the adapter of previous earthquake data
+            Log.e(LOG_TAG, "On Post Execute!");
+            mAdapter.clear();
+
+                // If there is a valid list of {@link Earthquake}s, then add them to the adapter's
+                // data set. This will trigger the ListView to update.
+                if (earthquakes != null && !earthquakes.isEmpty()) {
+                    Log.e(LOG_TAG, "On Post Execute submission!");
+                    mAdapter.addAll(earthquakes);
+                }
+            }
+        }
+
 }
