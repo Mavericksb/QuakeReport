@@ -19,6 +19,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.app.LoaderManager;
+import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -28,16 +31,20 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EarthquakeActivity extends AppCompatActivity {
+public class EarthquakeActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Earthquake>> {
 
     public static final String LOG_TAG = EarthquakeActivity.class.getName();
-    private EarthquakeAdapter mAdapter;
+    private static EarthquakeAdapter mAdapter;
     private String earthquakeUrl = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventtype=earthquake&orderby=time&minmag=5&limit=20";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.earthquake_activity);
+
+        // Prepare the loader.  Either re-connect with an existing one,
+        // or start a new one.
+        getLoaderManager().initLoader(0, null, this);
 
         //Start an AsynTask to collect earthquake events to put in an ArrayList.
         EarthquakeTask task = new EarthquakeTask();
@@ -70,6 +77,22 @@ public class EarthquakeActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public Loader<List<Earthquake>> onCreateLoader(int id, Bundle args) {
+
+        return new EarthquakeLoader(this, earthquakeUrl);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<Earthquake>> loader, List<Earthquake> data) {
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<Earthquake>> loader) {
+
+    }
+
     public class EarthquakeTask extends AsyncTask<String, Void, List<Earthquake>>{
         @Override
         protected List<Earthquake> doInBackground(String... urls) {
@@ -96,4 +119,8 @@ public class EarthquakeActivity extends AppCompatActivity {
             }
         }
 
+    public static void updateUI(List<Earthquake> earthquakes){
+        mAdapter.addAll(earthquakes);
+    }
 }
+
