@@ -17,7 +17,6 @@ package com.example.android.quakereport;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -27,15 +26,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class EarthquakeActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Earthquake>> {
+public class EarthquakeActivity extends AppCompatActivity implements LoaderCallbacks<List<Earthquake>> {
 
     public static final String LOG_TAG = EarthquakeActivity.class.getName();
     private static EarthquakeAdapter mAdapter;
     private String earthquakeUrl = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventtype=earthquake&orderby=time&minmag=5&limit=20";
+    private final int EARTHQUAKE_LOADER = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,11 +45,12 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
 
         // Prepare the loader.  Either re-connect with an existing one,
         // or start a new one.
-        getLoaderManager().initLoader(0, null, this);
+        LoaderManager earthquakeLoader = getLoaderManager();
+        earthquakeLoader.initLoader(EARTHQUAKE_LOADER, null, this);
 
-        //Start an AsynTask to collect earthquake events to put in an ArrayList.
+        /*Start an AsynTask to collect earthquake events to put in an ArrayList.
         EarthquakeTask task = new EarthquakeTask();
-        task.execute(earthquakeUrl);
+        task.execute(earthquakeUrl); */
 
         // Find a reference to the {@link ListView} in the layout
         ListView earthquakeListView = (ListView) findViewById(R.id.list);
@@ -80,20 +82,32 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
     @Override
     public Loader<List<Earthquake>> onCreateLoader(int id, Bundle args) {
 
+        Log.e(LOG_TAG, "Creating Earthquake Loader");
+
         return new EarthquakeLoader(this, earthquakeUrl);
+
     }
 
     @Override
-    public void onLoadFinished(Loader<List<Earthquake>> loader, List<Earthquake> data) {
+    public void onLoadFinished(Loader<List<Earthquake>> loader, List<Earthquake> earthquakes) {
+        // Clear the adapter of previous earthquake data
+        mAdapter.clear();
 
+        // If there is a valid list of {@link Earthquake}s, then add them to the adapter's
+        // data set. This will trigger the ListView to update.
+        if (earthquakes != null && !earthquakes.isEmpty()) {
+            Log.e(LOG_TAG, "OnLoadFinished submission!");
+            mAdapter.addAll(earthquakes);
+        }
     }
+
 
     @Override
     public void onLoaderReset(Loader<List<Earthquake>> loader) {
-
+        mAdapter.clear();
     }
 
-    public class EarthquakeTask extends AsyncTask<String, Void, List<Earthquake>>{
+ /*   public class EarthquakeTask extends AsyncTask<String, Void, List<Earthquake>>{
         @Override
         protected List<Earthquake> doInBackground(String... urls) {
             if (urls.length < 1 || urls[0] == null) {
@@ -117,10 +131,8 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
                     mAdapter.addAll(earthquakes);
                 }
             }
-        }
+        }*/
 
-    public static void updateUI(List<Earthquake> earthquakes){
-        mAdapter.addAll(earthquakes);
-    }
+
 }
 
