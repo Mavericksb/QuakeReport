@@ -15,7 +15,10 @@
  */
 package com.example.android.quakereport;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.LoaderManager;
@@ -26,7 +29,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,16 +44,38 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderCallb
     private static EarthquakeAdapter mAdapter;
     private String earthquakeUrl = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventtype=earthquake&orderby=time&minmag=5&limit=20";
     private final int EARTHQUAKE_LOADER = 1;
+    private TextView mEmptyTextView;
+    private ProgressBar mProgress;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.earthquake_activity);
 
-        // Prepare the loader.  Either re-connect with an existing one,
-        // or start a new one.
-        LoaderManager earthquakeLoader = getLoaderManager();
-        earthquakeLoader.initLoader(EARTHQUAKE_LOADER, null, this);
+
+
+        //Initialize the mEmpyTextView to locate the textview to display there are no earthquakes.
+        mEmptyTextView = (TextView)findViewById(R.id.empty_text_view);
+
+        mProgress = (ProgressBar) findViewById(R.id.progress_bar);
+
+        NetworkInfo networkInfo = getActiveNetworkInfo();
+        if (networkInfo == null || !networkInfo.isConnected()) {
+            // If no connectivity, cancel task and update Callback with null data.
+            mProgress.setVisibility(View.GONE);
+            mEmptyTextView.setText("No Internet connection.");
+
+        }
+        else {
+            //Initialize the progress Bar
+
+
+            // Prepare the loader.  Either re-connect with an existing one,
+            // or start a new one.
+            LoaderManager earthquakeLoader = getLoaderManager();
+            earthquakeLoader.initLoader(EARTHQUAKE_LOADER, null, this);
+        }
 
         /*Start an AsynTask to collect earthquake events to put in an ArrayList.
         EarthquakeTask task = new EarthquakeTask();
@@ -54,6 +83,9 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderCallb
 
         // Find a reference to the {@link ListView} in the layout
         ListView earthquakeListView = (ListView) findViewById(R.id.list);
+
+        //setting the view to the Empty text view if no earthquakes are passed
+        earthquakeListView.setEmptyView(findViewById(R.id.empty_text_view));
 
         // Create a new {@link ArrayAdapter} of earthquakes
         mAdapter = new EarthquakeAdapter(this, 0, new ArrayList<Earthquake>());
@@ -90,6 +122,9 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderCallb
 
     @Override
     public void onLoadFinished(Loader<List<Earthquake>> loader, List<Earthquake> earthquakes) {
+
+        //Hide the indetermined Progress bar
+        mProgress.setVisibility(View.GONE);
         // Clear the adapter of previous earthquake data
         mAdapter.clear();
 
@@ -99,12 +134,21 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderCallb
             Log.e(LOG_TAG, "OnLoadFinished submission!");
             mAdapter.addAll(earthquakes);
         }
+
+
+        mEmptyTextView.setText(R.string.no_earthquakes);
     }
 
 
     @Override
     public void onLoaderReset(Loader<List<Earthquake>> loader) {
         mAdapter.clear();
+    }
+
+    public NetworkInfo getActiveNetworkInfo() {
+        ConnectivityManager connectionManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectionManager.getActiveNetworkInfo();
+        return networkInfo;
     }
 
  /*   public class EarthquakeTask extends AsyncTask<String, Void, List<Earthquake>>{

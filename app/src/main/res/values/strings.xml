@@ -18,4 +18,5 @@
 
     //default string to use as a OffSet for the location
     <string name="near_of">Near of</string>
+    <string name="no_earthquakes">No earthquakes found.</string>
 </resources>
